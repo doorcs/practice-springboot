@@ -1,9 +1,12 @@
 spring:
+  application:
+    name: "demo"
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/testdb
-    username: root
-#    password:
+    username: root # password: 생략
+
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
