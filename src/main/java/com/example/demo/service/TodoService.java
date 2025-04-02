@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,4 +29,21 @@ public class TodoService {
 		return new TodoDto(todo.getTitle(), todo.getContent());
 	}
 
+	public boolean delete(Long id) {
+		Optional<Todo> todo = todoRepository.findById(id);
+
+		if (todo.isPresent()) {
+			todoRepository.deleteById(id);
+			return true;
+		} else
+			return false;
+	}
+
+	public TodoDto update(Long id, TodoDto todoDto) {
+		Todo td = todoRepository.findById(id).orElseThrow(() -> new NotFoundTodo("존재하지 않는 TODO입니다"));
+
+		td.changeTitle(todoDto.getTitle());
+		td.changeContent(todoDto.getContent());
+		return new TodoDto(td.getTitle(), td.getContent()); // 이게 최선인가?
+	}
 }

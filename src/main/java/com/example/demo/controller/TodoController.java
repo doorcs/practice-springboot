@@ -4,7 +4,9 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,24 @@ public class TodoController {
 			return ResponseEntity.status(HttpStatus.OK).body(todoDto);
 		} catch (NotFoundTodo notFoundTodo) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", notFoundTodo.getMessage()));
+		}
+	}
+
+	@DeleteMapping("/todo/{id}")
+	public ResponseEntity<Map<String, String>> deleteTodo(@PathVariable Long id) {
+		if (todoService.delete(id))
+			return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "삭제 성공"));
+		else
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(Map.of("message", "삭제 실패"));
+	}
+
+	@PatchMapping("/todo/{id}")
+	public ResponseEntity<?> updateTodo(@PathVariable Long id, @RequestBody TodoDto td) {
+		try {
+			TodoDto updated = todoService.update(id, td);
+			return ResponseEntity.status(HttpStatus.OK).body(updated);
+		} catch (NotFoundTodo nf) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", nf.getMessage()));
 		}
 	}
 }
